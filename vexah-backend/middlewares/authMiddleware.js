@@ -16,9 +16,6 @@ export const authenticateToken = (req, res, next) => {
 
 // Middleware de autorización
 export const authorizeRole = (role) => (req, res, next) => {
-    console.log({role});
-    console.log(req.user);
-
     if (req.user.rol !== role) {
         return res.status(403).json({ message: 'No tienes permiso para acceder a esta ruta' });
     }

@@ -1,8 +1,12 @@
-import User from '../models/User.js';
+import crypto from "crypto";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 
-export const create = async (req, res) => {
+import User from '../models/User.js';
+import { sendEmail } from '../config/email.js';
+
+export const register = async (req, res) => {
     try {
         const { nombre, correo, clave } = req.body;
 
@@ -26,7 +30,7 @@ export const create = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { correo, clave } = req.body;
-        const user = await User.findOne({ where: { correo } });
+        const user = await User.scope('withPassword').findOne({ where: { correo } });
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
         const isPasswordValid = await bcrypt.compare(clave, user.clave);
@@ -35,6 +39,7 @@ export const login = async (req, res) => {
         const token = jwt.sign({ id: user.id_usuario, rol: user.rol }, process.env.JWT_SECRET, { expiresIn: '8h' });
         res.json({ message: 'Inicio de sesión exitoso', token });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Error en el inicio de sesión', error });
     }
 };
@@ -68,6 +73,7 @@ export const requestPasswordReset = async (req, res) => {
         await sendEmail(user.correo, 'Recuperación de Contraseña', emailContent);
         res.json({ message: 'Correo de recuperación enviado' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Error en la solicitud de recuperación', error });
     }
 };
@@ -98,6 +104,7 @@ export const resetPassword = async (req, res) => {
 
         res.json({ message: 'Contraseña restablecida con éxito' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error al restablecer la contraseña', error });
     }
 };
