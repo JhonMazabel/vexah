@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors';
 import db from "./config/db.js";
 import dotenv from 'dotenv';
 
@@ -11,6 +12,11 @@ dotenv.config();
 
 // Iniciar Aplicación Express
 const app = express();
+app.use(cors({
+    origin: '*', // Permite todas las solicitudes (para desarrollo)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'] // Encabezados permitidos
+}));
 
 // Habilitar la lectura de datos por JSON y por Formularios
 app.use(express.json());
