@@ -5,18 +5,14 @@ import dotenv from 'dotenv';
 
 // Rutas
 import authRoutes from "./routes/authRoutes.js";
-import roleRoutes from './routes/roleRoutes.js';
+import userRoutes from "./routes/userRoutes.js";
 
 // Leer Variables de Entornos
 dotenv.config();
 
 // Iniciar Aplicación Express
 const app = express();
-app.use(cors({
-    origin: '*', // Permite todas las solicitudes (para desarrollo)
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'] // Encabezados permitidos
-}));
+app.use(cors());
 
 // Habilitar la lectura de datos por JSON y por Formularios
 app.use(express.json());
@@ -33,7 +29,7 @@ try {
 
 // Routing
 app.use('/api/auth', authRoutes);
-app.use('/api/roles', roleRoutes);
+app.use('/api/users', userRoutes);
 
 // Inicializar Puerto
 app.listen(process.env.PORT, () => console.log(`Servidor iniciado en el puerto ${process.env.PORT}`));

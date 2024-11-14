@@ -1,37 +1,51 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { create, login } from '../controllers/authController.js';
+import { create, login, requestPasswordReset, resetPassword } from '../controllers/authController.js';
 import validateFields from '../middlewares/validateFields.js';
 
 const router = express.Router();
 
-// Validaciones para el registro
-const registerValidationRules = [
-    body('nombre')
-        .notEmpty().withMessage('El nombre es obligatorio')
-        .isLength({ max: 100 }).withMessage('El nombre no debe exceder 100 caracteres'),
-    body('correo')
-        .isEmail().withMessage('Debe proporcionar un correo electrónico válido')
-        .notEmpty().withMessage('El correo electrónico es obligatorio'),
-    body('contraseña')
-        .isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres')
-        .notEmpty().withMessage('La contraseña es obligatoria'),
-    body('rol_id')
-        .isInt().withMessage('El rol debe ser un ID numérico')
-        .notEmpty().withMessage('El rol es obligatorio'),
-];
-
-// Validaciones para el inicio de sesión
-const loginValidationRules = [
-    body('correo')
-        .isEmail().withMessage('Debe proporcionar un correo electrónico válido')
-        .notEmpty().withMessage('El correo electrónico es obligatorio'),
-    body('contraseña')
-        .notEmpty().withMessage('La contraseña es obligatoria'),
-];
-
 // Rutas con validaciones y el middleware de validación
-router.post('/create', registerValidationRules, validateFields, create); // Registro
-router.post('/login', loginValidationRules, validateFields, login); // Inicio de sesión
+router.post(
+    '/create',
+    [
+        body('nombre').notEmpty().withMessage('El nombre es obligatorio'),
+        body('correo').isEmail().withMessage('Correo no válido'),
+        body('clave').isLength({ min: 6 }).withMessage('La clave debe tener al menos 6 caracteres'),
+    ],
+    validateFields,
+    create
+);
+
+router.post(
+    '/login',
+    [
+        body('correo')
+            .isEmail().withMessage('Debe proporcionar un correo electrónico válido')
+            .notEmpty().withMessage('El correo electrónico es obligatorio'),
+        body('clave')
+            .notEmpty().withMessage('La contraseña es obligatoria'),
+    ],
+    validateFields,
+    login
+);
+
+router.post(
+    '/request-password-reset',
+    [
+        body('correo').isEmail().withMessage('Correo no válido')
+    ],
+    validateFields,
+    requestPasswordReset
+);
+
+router.post('/reset-password',
+    [
+        body('token').notEmpty().withMessage('El token es obligatorio'),
+        body('nuevaContraseña').isLength({ min: 6 }).withMessage('La nueva contraseña debe tener al menos 6 caracteres')
+    ],
+    validateFields,
+    resetPassword
+);
 
 export default router;
