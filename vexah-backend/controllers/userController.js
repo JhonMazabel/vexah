@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 
 // Crear nuevo usuario (Solo Administrador)
@@ -19,6 +20,7 @@ export const crearUsuario = async (req, res) => {
         const usuario = await User.create({ nombre, correo, clave: hashedPassword, rol });
         res.status(201).json({ message: 'Usuario creado exitosamente', usuario });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Error al crear el usuario', error });
     }
 };
@@ -88,7 +90,7 @@ export const actualizarUsuario = async (req, res) => {
     const { nombre, correo, rol, clave } = req.body;
 
     try {
-        const usuario = await User.findByPk(id);
+        const usuario = await User.scope('withPassword').findByPk(id);
 
         if (!usuario) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
