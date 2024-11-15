@@ -1,0 +1,115 @@
+// src/scss/ProductsScreen.scss
+
+.products-screen {
+    display: grid;
+    grid-template-columns: 3fr 1fr; // Inventario y carrito siempre visible
+    gap: 20px;
+    padding: 20px;
+  
+    .header-image {
+      grid-column: span 2; // Toma el ancho completo
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f0f0f0;
+      padding: 10px;
+      position: sticky; // Mantiene el header en posición fija al hacer scroll
+      top: 0;
+      
+      .main-image {
+        font-size: 1.5rem;
+        color: gray;
+      }
+      
+      .back-button {
+        padding: 5px 10px;
+        background-color: #4A4A9C;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  
+    .inventory-section {
+      display: flex;
+      flex-direction: column;
+  
+      .filter-options {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+  
+        input {
+          padding: 8px;
+          font-size: 1rem;
+        }
+  
+        button {
+          padding: 8px;
+          font-size: 1rem;
+          background-color: #4A4A9C;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+      }
+  
+      .product-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+  
+        .product-card {
+          background-color: #ffffff;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          text-align: center;
+  
+          img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+          }
+  
+          button {
+            background-color: #4A4A9C;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  
+    .cart-section {
+      background-color: #f8f8f8;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      height: fit-content;
+      position: sticky;
+      top: 20px;
+  
+      h3 {
+        margin-bottom: 15px;
+      }
+  
+      .cart-item {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+      }
+  
+      .create-order {
+        width: 100%;
+        padding: 10px;
+        background-color: #4A4A9C;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    }
+  }
+  
