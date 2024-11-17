@@ -6,7 +6,7 @@ import {
     obtenerOrdenPorId,
     actualizarOrden,
     eliminarOrden,
-    restaurarOrden,
+    cambiarEstadoOrden,
     imprimirOrden
 } from '../controllers/orderController.js';
 
@@ -49,7 +49,7 @@ router.put(
 router.delete('/:id', authenticateToken, authorizeRole('ADMINISTRADOR'), eliminarOrden);
 
 // Ruta para restaurar una orden eliminada lógicamente
-router.patch('/:id', authenticateToken, authorizeRole('ADMINISTRADOR'), restaurarOrden);
+router.patch('/:id', authenticateToken, authorizeRole('ADMINISTRADOR'), cambiarEstadoOrden);
 
 // Ruta para imprimir una orden (generar PDF)
 router.get('/:id/imprimir', authenticateToken, imprimirOrden);
