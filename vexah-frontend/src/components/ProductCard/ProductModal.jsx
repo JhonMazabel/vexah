@@ -9,6 +9,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }) => {
     precio: initialData?.precio || '',
     stock: initialData?.stock || '',
     descripcion: initialData?.descripcion || '',
+    imagen_portada: null,
   });
 
   // Actualizar `formData` si `initialData` cambia (cuando seleccionas un producto diferente para editar)
@@ -20,6 +21,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }) => {
         precio: initialData.precio,
         stock: initialData.stock,
         descripcion: initialData.descripcion,
+        imagen_portada: null,
       });
     } else {
       // Restablecer el formulario si no hay `initialData` (por ejemplo, al agregar un nuevo producto)
@@ -29,6 +31,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }) => {
         precio: '',
         stock: '',
         descripcion: '',
+        imagen_portada: null,
       });
     }
   }, [initialData]);
@@ -36,6 +39,10 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, imagen_portada: e.target.files[0] });
   };
 
   const handleSubmit = (e) => {
@@ -87,6 +94,15 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }) => {
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Imagen</label>
+            <input
+              type="file"
+              name="imagen_portada"
+              onChange={handleFileChange}
+              accept="image/*"
             />
           </div>
           <div className="modal-actions">

@@ -1,7 +1,7 @@
-// src/screens/ProductsScreen.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard/ProductCard';
+import Cart from '../components/cart';
 import { getActiveProducts, createProduct, deleteProduct, updateProduct } from '../services/productApi';
 import { AuthContext } from '../context/AuthContext';
 import banner from '../assets/banner.png';
@@ -33,7 +33,24 @@ const ProductsScreen = () => {
   }, [refresh]);
 
   const addToCart = (product) => {
-    setCart([...cart, product]);
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find((item) => item.id_producto === product.id_producto);
+      if (existingProduct) {
+        // Si el producto ya está en el carrito, aumenta la cantidad si no supera el stock
+        if (existingProduct.quantity < product.stock) {
+          return prevCart.map((item) =>
+            item.id_producto === product.id_producto
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+        } else {
+          return prevCart;
+        }
+      } else {
+        // Si el producto no está en el carrito, agrégalo
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
   };
 
   const handleCreateProduct = async (productData) => {
@@ -109,7 +126,6 @@ const ProductsScreen = () => {
                 <div className="admin-buttons">
                   <button
                     onClick={() => {
-                      console.log(product);
                       setSelectedProduct(product);
                       setIsModalOpen(true);
                     }}
@@ -127,16 +143,8 @@ const ProductsScreen = () => {
         </div>
       </div>
 
-      <div className="cart-section">
-        <h3>Carrito de Compras</h3>
-        {cart.map((item, index) => (
-          <div key={index} className="cart-item">
-            <p>{item.nombre_producto}</p>
-            <p>${item.precio.toFixed(2)}</p>
-          </div>
-        ))}
-        <button className="create-order">Crear Orden</button>
-      </div>
+      {/* Carrito de Compras */}
+      <Cart cart={cart} setCart={setCart} />
 
       {/* Modal para Crear/Editar Productos */}
       <Modal
