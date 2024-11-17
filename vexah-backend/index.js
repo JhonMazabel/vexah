@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
 
 // Leer Variables de Entornos
 dotenv.config();
@@ -40,6 +41,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // Inicializar Puerto
 app.listen(process.env.PORT, () => console.log(`Servidor iniciado en el puerto ${process.env.PORT}`));
