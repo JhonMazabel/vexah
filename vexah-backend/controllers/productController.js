@@ -84,32 +84,33 @@ export const actualizarProducto = async (req, res) => {
     const { id } = req.params;
     const { nombre_producto, descripcion, precio, stock } = req.body;
     let imagen_portada = null;
-
-    // Si se sube una imagen, obtener la ruta del archivo
+  
     if (req.file) {
-        imagen_portada = req.file.path;
+      imagen_portada = req.file.path;
     }
-
+  
     try {
-        const producto = await Product.findByPk(id);
-
-        if (!producto) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-
-        producto.nombre_producto = nombre_producto || producto.nombre_producto;
-        producto.descripcion = descripcion || producto.descripcion;
-        producto.precio = precio || producto.precio;
-        producto.stock = stock || producto.stock;
-        producto.imagen_portada = imagen_portada || producto.imagen_portada;
-
-        await producto.save();
-
-        res.status(200).json({ message: 'Producto actualizado correctamente', producto });
+      // Cambiar id por id_producto para buscar el producto por la clave primaria correcta
+      const producto = await Product.findByPk(id);
+  
+      if (!producto) {
+        return res.status(404).json({ message: 'Producto no encontrado' });
+      }
+  
+      producto.nombre_producto = nombre_producto || producto.nombre_producto;
+      producto.descripcion = descripcion || producto.descripcion;
+      producto.precio = precio || producto.precio;
+      producto.stock = stock || producto.stock;
+      producto.imagen_portada = imagen_portada || producto.imagen_portada;
+  
+      await producto.save();
+  
+      res.status(200).json({ message: 'Producto actualizado correctamente', producto });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el producto', error });
+      res.status(500).json({ message: 'Error al actualizar el producto', error });
     }
-};
+  };
+  
 
 // Eliminar un producto (Borrado lógico - Solo Administrador)
 export const eliminarProducto = async (req, res) => {
