@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 
-import User from '../models/User.js';
+import { User } from '../models/index.js';
+
 import { sendEmail } from '../config/email.js';
 
 export const register = async (req, res) => {

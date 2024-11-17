@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import Product from '../models/Product.js';
+import { Product } from '../models/index.js';
 
 // Crear un nuevo producto (Solo Administrador)
 export const crearProducto = async (req, res) => {

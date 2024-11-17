@@ -78,7 +78,7 @@ router.delete(
 
 // Ruta para cambiar estado del usuario (borrar o recuperar automáticamente)
 router.patch(
-    '/:id/cambiar-estado',
+    '/:id',
     authenticateToken,
     authorizeRole('ADMINISTRADOR'),
     cambiarEstadoUsuario

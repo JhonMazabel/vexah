@@ -43,7 +43,7 @@ router.post(
 
 router.get('/', authenticateToken, listarProductosActivos);
 router.get('/all', authenticateToken, authorizeRole('ADMINISTRADOR'), listarTodosProductos);
-router.get('/buscar', authenticateToken, buscarProductos);
+router.get('/search', authenticateToken, buscarProductos);
 router.get('/:id', authenticateToken, obtenerProductoPorId);
 
 router.put(
@@ -72,6 +72,6 @@ router.put(
 router.delete('/:id', authenticateToken, authorizeRole('ADMINISTRADOR'), eliminarProducto);
 
 // Cambiar estado del producto (restaurar o eliminar lógicamente)
-router.patch('/:id/cambiar-estado', authenticateToken, authorizeRole('ADMINISTRADOR'), cambiarEstadoProducto);
+router.patch('/:id', authenticateToken, authorizeRole('ADMINISTRADOR'), cambiarEstadoProducto);
 
 export default router;

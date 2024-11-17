@@ -2,7 +2,8 @@ import { exit } from "node:process";
 import db from "../config/db.js";
 
 import usuarios from "./usuarios.js";
-import User from "../models/User.js";
+
+import { User } from '../models/index.js';
 
 const importarDatos = async() => {
     try {

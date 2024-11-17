@@ -24,8 +24,8 @@ const User = db.define('User', {
     allowNull: false,
   },
   rol: {
-    type: DataTypes.ENUM('ADMINISTRADOR', 'USUARIO'),
-    defaultValue: "USUARIO"
+    type: DataTypes.ENUM('ADMINISTRADOR', 'ASESOR_VENTAS'),
+    defaultValue: "ASESOR_VENTAS"
   },
   token_recuperacion: {
     type: DataTypes.STRING,
