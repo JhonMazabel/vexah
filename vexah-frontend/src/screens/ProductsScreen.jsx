@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import ProductCard from '../components/ProductCard/ProductCard';
-import Cart from '../components/cart';
+import Cart from '../components/Cart/Cart';
+
 import { getActiveProducts, createProduct, deleteProduct, updateProduct } from '../services/productApi';
 import { AuthContext } from '../context/AuthContext';
+
 import banner from '../assets/banner.png';
 import Modal from 'react-modal'; // Asegúrate de instalar react-modal
 import '../scss/ProductsScreen.scss';
@@ -35,6 +38,7 @@ const ProductsScreen = () => {
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id_producto === product.id_producto);
+      
       if (existingProduct) {
         // Si el producto ya está en el carrito, aumenta la cantidad si no supera el stock
         if (existingProduct.quantity < product.stock) {

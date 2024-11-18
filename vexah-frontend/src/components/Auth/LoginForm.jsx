@@ -25,7 +25,7 @@ const LoginForm = () => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">Email</label>
+          <label className="form-label">Email:</label>
           <input
             type="email"
             className="form-control"
@@ -34,8 +34,9 @@ const LoginForm = () => {
             required
           />
         </div>
+        
         <div className="mb-3">
-          <label className="form-label">Contraseña</label>
+          <label className="form-label">Contraseña:</label>
           <input
             type="password"
             className="form-control"
@@ -44,6 +45,7 @@ const LoginForm = () => {
             required
           />
         </div>
+
         <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
         {error && <p className="text-danger">{error}</p>}
       </form>
