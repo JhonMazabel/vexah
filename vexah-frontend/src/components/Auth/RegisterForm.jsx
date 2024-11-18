@@ -16,7 +16,7 @@ const RegisterForm = () => {
       const data = await registerUser({
         nombre,
         correo: email,
-        contraseña: password,
+        clave: password,
         rol_id: parseInt(roleId),
       });
       setMessage('Registro exitoso');

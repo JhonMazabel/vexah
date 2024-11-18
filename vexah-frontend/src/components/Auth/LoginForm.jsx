@@ -1,20 +1,20 @@
 // src/components/Auth/LoginForm.jsx
 import React, { useState } from 'react';
 import { loginUser } from '../../services/authApi';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser({ correo: email, contraseña: password });
-      setMessage('Inicio de sesión exitoso');
-      // Aquí puedes manejar el inicio de sesión, como guardar un token en localStorage o redirigir al usuario
-      console.log(data);
+      const data = await loginUser({ correo: email, clave: password }); // Asegúrate de que el payload coincida con el backend
+      localStorage.setItem('token', data.token); // Guarda el token en localStorage
+      navigate('/products'); // Redirige a la pantalla de productos
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión');
     }
@@ -35,7 +35,7 @@ const LoginForm = () => {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Password</label>
+          <label className="form-label">Contraseña</label>
           <input
             type="password"
             className="form-control"
@@ -44,9 +44,8 @@ const LoginForm = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">Login</button>
+        <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
         {error && <p className="text-danger">{error}</p>}
-        {message && <p className="text-success">{message}</p>}
       </form>
     </div>
   );
