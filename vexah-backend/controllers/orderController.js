@@ -1,4 +1,4 @@
-import { Order, OrderDetail, Product, Customer } from '../models/index.js';
+import { Order, OrderDetail, Product, Customer, InventoryTransaction } from '../models/index.js';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
@@ -56,6 +56,7 @@ export const crearOrden = async (req, res) => {
 
         res.status(201).json({ message: 'Orden creada exitosamente', orden: nuevaOrden });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error al crear la orden', error });
     }
 };
@@ -208,10 +209,15 @@ export const cambiarEstadoOrden = async (req, res) => {
 // Imprimir una orden (generar un archivo PDF para impresora térmica 80mm)
 export const imprimirOrden = async (req, res) => {
     const { id } = req.params;
-
     try {
         const orden = await Order.findByPk(id, {
-            include: [Customer, OrderDetail],
+            include: [
+                Customer,
+                {
+                    model: OrderDetail,
+                    include: [Product]
+                }
+            ],
         });
 
         if (!orden) {
@@ -232,33 +238,47 @@ export const imprimirOrden = async (req, res) => {
         const writeStream = fs.createWriteStream(filePath);
         doc.pipe(writeStream);
 
+        // Agregar el logo al PDF
+        const logoPath = path.resolve('./uploads/logo.png');
+        doc.image(logoPath, {
+            fit: [100, 50], // Ajusta el tamaño del logo
+            align: 'center',
+        }).moveDown(5); // Agregar más espacio después del logo
+
         // Encabezado del PDF
-        doc.fontSize(14).text('===== ORDEN DE COMPRA =====', { align: 'center' })
+        doc.fontSize(14).font('Helvetica-Bold').text('ORDEN DE COMPRA', { align: 'center' })
             .moveDown()
             .fontSize(10)
+            .font('Helvetica')
             .text(`ID Orden: ${orden.id_orden}`)
             .text(`Cliente: ${orden.Customer.nombre}`)
             .text(`Identificación: ${orden.Customer.identificacion}`)
-            .text(`Fecha: ${orden.createdAt}`)
+            .text(`Fecha: ${orden.createdAt.toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`)
             .moveDown()
             .text('-----------------------------', { align: 'center' });
 
         // Detalles de los productos en la orden
         orden.OrderDetails.forEach((detalle) => {
+            const totalProducto = detalle.cantidad * detalle.precio_unitario;
             doc.fontSize(10)
-                .text(`Producto ID: ${detalle.id_producto}`)
+                .font('Helvetica-Bold')
+                .text(`Producto: ${detalle.Product.nombre_producto}`)
+                .font('Helvetica')
                 .text(`Cantidad: ${detalle.cantidad}`)
-                .text(`Precio Unitario: $${detalle.precio_unitario}`)
+                .text(`Precio Unitario: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(detalle.precio_unitario)}`)
+                .text(`Total: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(totalProducto)}`)
+                .moveDown()
                 .text('-----------------------------', { align: 'center' });
         });
 
         // Total de la orden
         doc.moveDown()
             .fontSize(12)
-            .text(`Total: $${orden.total}`, { align: 'right' })
+            .font('Helvetica-Bold')
+            .text(`Total: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(orden.total)}`, { align: 'right' })
             .moveDown()
             .fontSize(14)
-            .text('===== GRACIAS POR SU COMPRA =====', { align: 'center' });
+            .text('GRACIAS POR SU COMPRA', { align: 'center' });
 
         // Finalizar el documento PDF
         doc.end();
