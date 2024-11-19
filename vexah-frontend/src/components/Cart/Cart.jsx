@@ -17,10 +17,11 @@ const initialClientDataState = {
   pais: '',
 };
 
-const Cart = ({ cart, setCart }) => {
+const Cart = ({ cart, setCart, setRefresh }) => {
   const [identificacion, setIdentificacion] = useState('');
   const [cliente, setCliente] = useState(initialClientDataState);
-  const [clienteExistente, setClienteExistente] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Incrementa la cantidad de un producto
   const handleIncrease = (productId) => {
@@ -51,38 +52,24 @@ const Cart = ({ cart, setCart }) => {
   // Maneja la búsqueda del cliente por identificación
   const handleBuscarCliente = async () => {
     try {
+      setError(''); // Limpia los errores previos
+      setSuccess(''); // Limpia los mensajes de éxito previos
       const response = await getCustomerByIdentification(identificacion);
       if (response) {
         setCliente(response);
-        setClienteExistente(true);
       } else {
-        setClienteExistente(false);
         setCliente({
-          nombre: '',
+          ...initialClientDataState,
           identificacion,
-          correo: '',
-          telefono: '',
-          direccion: '',
-          ciudad: '',
-          estado: '',
-          codigo_postal: '',
-          pais: '',
         });
       }
     } catch (error) {
       console.error('Error al buscar cliente:', error);
+      setError('Cliente no encontrado. Por favor complete los datos del cliente.');
       setCliente({
-        nombre: '',
-        identificacion: '',
-        correo: '',
-        telefono: '',
-        direccion: '',
-        ciudad: '',
-        estado: '',
-        codigo_postal: '',
-        pais: '',
+        ...initialClientDataState,
+        identificacion,
       });
-      setClienteExistente(false);
     }
   };
 
@@ -98,17 +85,29 @@ const Cart = ({ cart, setCart }) => {
   // Lógica para crear la orden
   const handleCreateOrder = async () => {
     try {
+      setError(''); // Limpia los errores previos
+      setSuccess(''); // Limpia los mensajes de éxito previos
       let clienteId;
 
-      // Verifica si el cliente ya existe
-      if (!clienteExistente) {
-        // Si no existe, crea un nuevo cliente
-        const nuevoCliente = await createCustomer(cliente);
-        console.log({nuevoCliente});
-        clienteId = nuevoCliente.cliente.id_cliente;
-      } else {
-        // Si ya existe, usa el ID del cliente existente
-        clienteId = cliente.id_cliente;
+      // Verifica si el cliente ya existe en la base de datos
+      try {
+        const clienteExistenteBD = await getCustomerByIdentification(cliente.identificacion);
+        if (clienteExistenteBD) {
+          // Si ya existe, usa el ID del cliente existente
+          clienteId = clienteExistenteBD.id_cliente;
+        } else {
+          // Si no existe, crea un nuevo cliente
+          const nuevoCliente = await createCustomer(cliente);
+          clienteId = nuevoCliente.cliente.id_cliente;
+        }
+      } catch (error) {
+        // Si hay un error (como un 404), crea un nuevo cliente
+        if (error.response && error.response.status === 404) {
+          const nuevoCliente = await createCustomer(cliente);
+          clienteId = nuevoCliente.cliente.id_cliente;
+        } else {
+          throw error; // Si no es un 404, vuelve a lanzar el error
+        }
       }
 
       // Estructura de datos para enviar al backend
@@ -131,21 +130,27 @@ const Cart = ({ cart, setCart }) => {
 
       // Limpia el carrito después de crear la orden
       setCart([]);
-      setCliente({
-        nombre: '',
-        identificacion: '',
-        correo: '',
-        telefono: '',
-        direccion: '',
-        ciudad: '',
-        estado: '',
-        codigo_postal: '',
-        pais: '',
-      });
-      setClienteExistente(false);
+      setCliente(initialClientDataState);
       setIdentificacion('');
+
+      // Actualiza el inventario
+      setRefresh((prevRefresh) => !prevRefresh);
+
+      // Mensaje de éxito
+      setSuccess('Orden creada exitosamente. La factura se ha descargado.');
+
+      // Desaparece el mensaje de éxito después de 5 segundos
+      setTimeout(() => {
+        setSuccess('');
+      }, 5000);
     } catch (error) {
       console.error('Error al crear la orden:', error);
+      setError('Error al crear la orden. Por favor intente nuevamente.');
+
+      // Desaparece el mensaje de error después de 5 segundos
+      setTimeout(() => {
+        setError('');
+      }, 5000);
     }
   };
 
@@ -188,94 +193,43 @@ const Cart = ({ cart, setCart }) => {
         ))
       )}
 
-{cart.length > 0 && (
+      {cart.length > 0 && (
         <>
           <div className="customer-section">
             <h4>Datos del Cliente</h4>
             <div className="customer-form">
-              <input
-                type="text"
-                placeholder="Número de Identificación"
-                value={identificacion}
-                onChange={(e) => setIdentificacion(e.target.value)}
-              />
-              <button onClick={handleBuscarCliente}>Buscar Cliente</button>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Número de Identificación"
+                  value={identificacion}
+                  onChange={(e) => setIdentificacion(e.target.value)}
+                />
+                <button className="buscar-cliente-button" onClick={handleBuscarCliente}>
+                  Buscar Cliente
+                </button>
+              </div>
             </div>
+            {error && <p className="error-message">{error}</p>}
             <div className="customer-details">
-              <input
-                type="text"
-                name="nombre"
-                placeholder="Nombre"
-                value={cliente.nombre}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="identificacion"
-                placeholder="Identificación"
-                value={cliente.identificacion}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="correo"
-                placeholder="Correo Electrónico"
-                value={cliente.correo}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="telefono"
-                placeholder="Teléfono"
-                value={cliente.telefono}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="direccion"
-                placeholder="Dirección"
-                value={cliente.direccion}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="ciudad"
-                placeholder="Ciudad"
-                value={cliente.ciudad}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="estado"
-                placeholder="Estado"
-                value={cliente.estado}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="codigo_postal"
-                placeholder="Código Postal"
-                value={cliente.codigo_postal}
-                onChange={handleChangeCliente}
-                required
-              />
-              <input
-                type="text"
-                name="pais"
-                placeholder="País"
-                value={cliente.pais}
-                onChange={handleChangeCliente}
-                required
-              />
+              {Object.keys(initialClientDataState).map((key) => (
+                <div key={key} className="form-group">
+                  <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={cliente[key]}
+                    onChange={handleChangeCliente}
+                    required
+                  />
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Mensaje de éxito o error */}
+          {success && <p className="text-success">{success}</p>}
+          {error && <p className="text-danger">{error}</p>}
 
           <button className="create-order" onClick={handleCreateOrder}>
             Crear Orden

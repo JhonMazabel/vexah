@@ -39,11 +39,12 @@ const Customer = db.define('Customer', {
     },
     codigo_postal: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
     },
     pais: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        defaultValue: "Colombia"
     },
 }, {
     tableName: 'clientes',
