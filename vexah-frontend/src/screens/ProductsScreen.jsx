@@ -1,15 +1,14 @@
+// src/screens/ProductsScreen.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import ProductCard from '../components/ProductCard/ProductCard';
 import Cart from '../components/Cart/Cart';
 import '../scss/ProductModal.scss';
 import ProductModal from '../components/ProductCard/ProductModal';
 import { getActiveProducts, createProduct, deleteProduct, updateProduct } from '../services/productApi';
 import { AuthContext } from '../context/AuthContext';
-
 import banner from '../assets/banner.png';
-import Modal from 'react-modal'; // Asegúrate de instalar react-modal
+import Modal from 'react-modal';
 import '../scss/ProductsScreen.scss';
 
 Modal.setAppElement('#root'); // Especifica el elemento app para evitar advertencias de accesibilidad
@@ -24,6 +23,7 @@ const ProductsScreen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Obtener los productos activos
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -36,10 +36,10 @@ const ProductsScreen = () => {
     fetchProducts();
   }, [refresh]);
 
+  // Añadir al carrito
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id_producto === product.id_producto);
-      
       if (existingProduct) {
         // Si el producto ya está en el carrito, aumenta la cantidad si no supera el stock
         if (existingProduct.quantity < product.stock) {
@@ -58,6 +58,7 @@ const ProductsScreen = () => {
     });
   };
 
+  // Crear nuevo producto (administrador)
   const handleCreateProduct = async (productData) => {
     try {
       await createProduct(productData, token);
@@ -68,6 +69,7 @@ const ProductsScreen = () => {
     }
   };
 
+  // Actualizar un producto (administrador)
   const handleUpdateProduct = async (productId, productData) => {
     try {
       if (!productId) {
@@ -82,6 +84,7 @@ const ProductsScreen = () => {
     }
   };
 
+  // Eliminar un producto (administrador)
   const handleDeleteProduct = async (productId) => {
     try {
       if (!productId) {
@@ -149,7 +152,7 @@ const ProductsScreen = () => {
       </div>
 
       {/* Carrito de Compras */}
-      <Cart cart={cart} setCart={setCart} />
+      <Cart cart={cart} setCart={setCart} setRefresh={setRefresh} />
 
       {/* Modal para Crear/Editar Productos */}
       <Modal
