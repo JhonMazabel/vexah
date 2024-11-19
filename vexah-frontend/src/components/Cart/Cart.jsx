@@ -96,17 +96,15 @@ const Cart = ({ cart, setCart, setRefresh }) => {
           // Si ya existe, usa el ID del cliente existente
           clienteId = clienteExistenteBD.id_cliente;
         } else {
-          // Si no existe, crea un nuevo cliente
-          const nuevoCliente = await createCustomer(cliente);
-          clienteId = nuevoCliente.cliente.id_cliente;
+          throw new Error('Cliente no encontrado');
         }
       } catch (error) {
-        // Si hay un error (como un 404), crea un nuevo cliente
-        if (error.response && error.response.status === 404) {
+        // Si el cliente no existe, crea uno nuevo
+        if (error.message === 'Cliente no encontrado' || (error.response && error.response.status === 404)) {
           const nuevoCliente = await createCustomer(cliente);
           clienteId = nuevoCliente.cliente.id_cliente;
         } else {
-          throw error; // Si no es un 404, vuelve a lanzar el error
+          throw error; // Si no es un error de cliente no encontrado, vuelve a lanzar el error
         }
       }
 
@@ -198,44 +196,101 @@ const Cart = ({ cart, setCart, setRefresh }) => {
           <div className="customer-section">
             <h4>Datos del Cliente</h4>
             <div className="customer-form">
-              <div className="form-group">
-                <input
-                  type="text"
-                  placeholder="Número de Identificación"
-                  value={identificacion}
-                  onChange={(e) => setIdentificacion(e.target.value)}
-                />
-                <button className="buscar-cliente-button" onClick={handleBuscarCliente}>
-                  Buscar Cliente
-                </button>
-              </div>
+              <input
+                type="text"
+                placeholder="Número de Identificación"
+                value={identificacion}
+                onChange={(e) => setIdentificacion(e.target.value)}
+              />
+              <button className="buscar-cliente-button" onClick={handleBuscarCliente}>
+                Buscar Cliente
+              </button>
             </div>
             {error && <p className="error-message">{error}</p>}
             <div className="customer-details">
-              {Object.keys(initialClientDataState).map((key) => (
-                <div key={key} className="form-group">
-                  <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={cliente[key]}
-                    onChange={handleChangeCliente}
-                    required
-                  />
-                </div>
-              ))}
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Nombre"
+                value={cliente.nombre}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="identificacion"
+                placeholder="Identificación"
+                value={cliente.identificacion}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="correo"
+                placeholder="Correo Electrónico"
+                value={cliente.correo}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="telefono"
+                placeholder="Teléfono"
+                value={cliente.telefono}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="direccion"
+                placeholder="Dirección"
+                value={cliente.direccion}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="ciudad"
+                placeholder="Ciudad"
+                value={cliente.ciudad}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="estado"
+                placeholder="Estado"
+                value={cliente.estado}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="codigo_postal"
+                placeholder="Código Postal"
+                value={cliente.codigo_postal}
+                onChange={handleChangeCliente}
+                required
+              />
+              <input
+                type="text"
+                name="pais"
+                placeholder="País"
+                value={cliente.pais}
+                onChange={handleChangeCliente}
+                required
+              />
             </div>
           </div>
-
-          {/* Mensaje de éxito o error */}
-          {success && <p className="text-success">{success}</p>}
-          {error && <p className="text-danger">{error}</p>}
 
           <button className="create-order" onClick={handleCreateOrder}>
             Crear Orden
           </button>
         </>
       )}
+
+      {success && <p className="success-message">{success}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

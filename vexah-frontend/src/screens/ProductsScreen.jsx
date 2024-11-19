@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard/ProductCard';
 import Cart from '../components/Cart/Cart';
 import '../scss/ProductModal.scss';
-import ProductModal from '../components/ProductCard/ProductModal';
 import { getActiveProducts, createProduct, deleteProduct, updateProduct } from '../services/productApi';
 import { AuthContext } from '../context/AuthContext';
 import banner from '../assets/banner.png';
