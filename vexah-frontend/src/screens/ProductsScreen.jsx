@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import ProductCard from '../components/ProductCard/ProductCard';
 import Cart from '../components/Cart/Cart';
-
+import '../scss/ProductModal.scss';
+import ProductModal from '../components/ProductCard/ProductModal';
 import { getActiveProducts, createProduct, deleteProduct, updateProduct } from '../services/productApi';
 import { AuthContext } from '../context/AuthContext';
 
@@ -152,67 +153,98 @@ const ProductsScreen = () => {
 
       {/* Modal para Crear/Editar Productos */}
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="Formulario de Producto"
-        className="modal"
-        ariaHideApp={false}
-      >
-        <h2>{selectedProduct ? 'Editar Producto' : 'Agregar Producto'}</h2>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const productData = {
-              id_producto: selectedProduct?.id_producto ?? null,
-              nombre_producto: formData.get('nombre_producto'),
-              descripcion: formData.get('descripcion'),
-              precio: parseFloat(formData.get('precio')),
-              stock: parseInt(formData.get('stock'), 10),
-            };
+  isOpen={isModalOpen}
+  onRequestClose={() => setIsModalOpen(false)}
+  contentLabel="Formulario de Producto"
+  className="modal"
+  ariaHideApp={false}
+>
+  <div className="modal-content">
+    <h2>{selectedProduct ? 'Editar Producto' : 'Agregar Producto'}</h2>
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target); // FormData para manejar archivos
+        const productData = {
+          id_producto: selectedProduct?.id_producto ?? null,
+          nombre_producto: formData.get('nombre_producto'),
+          descripcion: formData.get('descripcion'),
+          precio: parseFloat(formData.get('precio')),
+          stock: parseInt(formData.get('stock'), 10),
+          imagen_portada: formData.get('imagen_portada'), // Campo de imagen
+        };
 
-            if (selectedProduct) {
-              if (selectedProduct.id_producto) {
-                await handleUpdateProduct(selectedProduct.id_producto, productData);
-              } else {
-                console.error("ID del producto seleccionado no encontrado.");
-              }
-            } else {
-              await handleCreateProduct(productData);
-            }
-          }}
+        if (selectedProduct) {
+          await handleUpdateProduct(selectedProduct.id_producto, productData);
+        } else {
+          await handleCreateProduct(productData);
+        }
+      }}
+    >
+      <div>
+        <label htmlFor="nombre_producto">Nombre del producto</label>
+        <input
+          id="nombre_producto"
+          name="nombre_producto"
+          defaultValue={selectedProduct?.nombre_producto || ''}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="descripcion">Descripción</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          defaultValue={selectedProduct?.descripcion || ''}
+        />
+      </div>
+      <div>
+        <label htmlFor="precio">Precio</label>
+        <input
+          id="precio"
+          name="precio"
+          type="number"
+          step="0.01"
+          defaultValue={selectedProduct?.precio || ''}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="stock">Stock</label>
+        <input
+          id="stock"
+          name="stock"
+          type="number"
+          defaultValue={selectedProduct?.stock || ''}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="imagen_portada">Imagen del producto</label>
+        <input
+          id="imagen_portada"
+          name="imagen_portada"
+          type="file"
+          accept="image/*"
+        />
+      </div>
+      <div className="modal-actions">
+        <button type="submit" className="btn btn-primary">
+          {selectedProduct ? 'Actualizar' : 'Crear'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(false)}
+          className="btn btn-secondary"
         >
-          <input
-            name="nombre_producto"
-            placeholder="Nombre del producto"
-            defaultValue={selectedProduct?.nombre_producto || ''}
-            required
-          />
-          <textarea
-            name="descripcion"
-            placeholder="Descripción"
-            defaultValue={selectedProduct?.descripcion || ''}
-          />
-          <input
-            name="precio"
-            type="number"
-            step="0.01"
-            placeholder="Precio"
-            defaultValue={selectedProduct?.precio || ''}
-            required
-          />
-          <input
-            name="stock"
-            type="number"
-            placeholder="Stock"
-            defaultValue={selectedProduct?.stock || ''}
-            required
-          />
-          <button type="submit" className="btn btn-primary">
-            {selectedProduct ? 'Actualizar' : 'Crear'}
-          </button>
-        </form>
-      </Modal>
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</Modal>
+
+
     </div>
   );
 };

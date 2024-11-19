@@ -402,3 +402,124 @@
     background-color: #357ABD;
   }
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); // Fondo oscuro semitransparente
+  z-index: 1000;
+
+  .modal-content {
+    background-color: #ffffff;
+    padding: 30px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+      color: #4A90E2;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      div {
+        display: flex;
+        flex-direction: column;
+
+        label {
+          font-weight: bold;
+          margin-bottom: 5px;
+          color: #4A90E2;
+        }
+
+        input,
+        textarea {
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font-size: 1rem;
+          outline: none;
+
+          &:focus {
+            border-color: #4A90E2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+          }
+        }
+
+        textarea {
+          resize: none;
+          height: 100px;
+        }
+
+        input[type="file"] {
+          border: none;
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        button {
+          padding: 10px 15px;
+          font-size: 1rem;
+          font-weight: bold;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+          &.btn-primary {
+            background-color: #4A90E2;
+            color: #ffffff;
+            border: none;
+
+            &:hover {
+              background-color: #357ABD;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+          }
+
+          &.btn-secondary {
+            background-color: #E24A4A;
+            color: #ffffff;
+            border: none;
+
+            &:hover {
+              background-color: #C0392B;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

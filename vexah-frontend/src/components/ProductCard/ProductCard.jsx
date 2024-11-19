@@ -18,7 +18,7 @@ const formatPrice = (price) => {
 const ProductCard = ({ product, addToCart }) => {
   // Construye la URL completa de la imagen del producto
   const imageUrl = product.imagen_portada
-    ? `http://localhost:3000${product.imagen_portada}` // Cambia localhost:3000 si usas otro host
+    ? `http://localhost:3000/${product.imagen_portada}` // Cambia localhost:3000 si usas otro host
     : defaultPlaceholder;
 
   return (

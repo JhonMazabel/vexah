@@ -82,13 +82,13 @@ export const obtenerProductoPorId = async (req, res) => {
 // Editar un producto (Solo Administrador)
 export const actualizarProducto = async (req, res) => {
     const { id } = req.params;
-    const { nombre_producto, descripcion, precio, stock } = req.body;
+    const { nombre_producto, descripcion, precio, stock} = req.body;
     let imagen_portada = null;
   
     if (req.file) {
       imagen_portada = req.file.path;
     }
-  
+  console.log(imagen_portada);
     try {
       // Cambiar id por id_producto para buscar el producto por la clave primaria correcta
       const producto = await Product.findByPk(id);
