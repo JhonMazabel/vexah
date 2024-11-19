@@ -43,7 +43,6 @@ const Customer = db.define('Customer', {
     },
     pais: {
         type: DataTypes.STRING(100),
-        allowNull: false,
         defaultValue: "Colombia"
     },
 }, {

@@ -23,8 +23,8 @@ router.post(
         body('direccion').notEmpty().withMessage('La dirección es obligatoria'),
         body('ciudad').notEmpty().withMessage('La ciudad es obligatoria'),
         body('estado').notEmpty().withMessage('El estado es obligatorio'),
-        body('codigo_postal').notEmpty().withMessage('El código postal es obligatorio'),
-        body('pais').notEmpty().withMessage('El país es obligatorio'),
+        body('codigo_postal').optional().notEmpty().withMessage('El código postal es obligatorio'),
+        body('pais').optional().notEmpty().withMessage('El país es obligatorio'),
         validateFields
     ],
     crearCliente

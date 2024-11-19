@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getOrders } from '../services/orderApi';
+import { getOrders, exportOrdersPDF } from '../services/orderApi';
 import { AuthContext } from '../context/AuthContext';
 import '../scss/OrdersScreen.scss';
 import banner from '../assets/banner.png';
@@ -57,10 +57,17 @@ const OrderScreen = () => {
         <img src={banner} alt="Banner" className="banner-image" />
       </header>
 
+      <div className="actions">
+        <button className="export-pdf-button" onClick={exportOrdersPDF}>
+          Exportar PDF
+        </button>
+      </div>
+
+
       <main className="main-content">
         <div className="orders-container">
           <h2 className="section-title">Listado de Órdenes</h2>
-          
+
           {error && (
             <div className="error-message">
               <span className="icon">⚠️</span>

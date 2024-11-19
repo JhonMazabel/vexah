@@ -57,3 +57,29 @@ export const downloadOrderPDF = async (orderId) => {
         throw error.response?.data || 'Error al descargar la factura';
     }
 };
+
+
+export const exportOrdersPDF = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API_URL}/exportar-pdf`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob', // Necesario para descargar archivos
+        });
+
+        // Crear un enlace para descargar el archivo
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'listado_ordenes.pdf');
+        document.body.appendChild(link);
+        link.click();
+        // Eliminar el objeto URL después de la descarga
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error al exportar PDF:', error.message);
+        alert('Hubo un error al exportar el PDF. Inténtalo de nuevo.');
+    }
+};

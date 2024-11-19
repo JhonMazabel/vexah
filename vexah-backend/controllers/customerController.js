@@ -20,7 +20,7 @@ export const crearCliente = async (req, res) => {
             direccion,
             ciudad,
             estado,
-            codigo_postal,
+            codigo_postal: codigo_postal || null,
             pais
         });
 

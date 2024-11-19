@@ -304,3 +304,142 @@ export const imprimirOrden = async (req, res) => {
         res.status(500).json({ message: 'Error al imprimir la orden', error });
     }
 };
+
+export const exportarOrdenesPDF = async (req, res) => {
+    try {
+        const ordenes = await Order.findAll({
+            include: [Customer, User],
+            order: [['id_orden', 'desc']],
+        });
+
+        const doc = new PDFDocument({ margin: 30 });
+        const fileName = 'listado_ordenes.pdf';
+        const filePath = path.resolve(`./pdfs/${fileName}`);
+        const writeStream = fs.createWriteStream(filePath);
+        doc.pipe(writeStream);
+
+        // Función para agregar marca de agua
+        const addWatermark = () => {
+            const pageWidth = doc.page.width;
+            const pageHeight = doc.page.height;
+            const logoPath = path.resolve('./uploads/logo.png'); // Ruta al logo
+            const logoSize = 200;
+
+            doc.fillOpacity(0.1); // Establecer la opacidad antes de dibujar la imagen
+            doc.image(logoPath, (pageWidth - logoSize) / 2, (pageHeight - logoSize) / 2, {
+                width: logoSize,
+            });
+            doc.fillOpacity(1);
+        };
+
+        // Encabezado
+        doc.fontSize(16).font('Helvetica-Bold').text('Listado de Órdenes', { align: 'center' });
+        doc.moveDown();
+
+        // Dimensiones de la tabla
+        const tableTop = 100;
+        const itemSpacing = 20;
+        const colWidths = [50, 150, 150, 80, 80, 80]; // Anchos de columnas
+        const totalTableWidth = colWidths.reduce((a, b) => a + b, 0);
+        const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+        const offsetX = (pageWidth - totalTableWidth) / 2 + doc.page.margins.left;
+
+        // Dibujar Encabezados de Tabla
+        let y = tableTop;
+        doc.fontSize(10).font('Helvetica-Bold');
+
+        // Dibujar fila de encabezados
+        const headers = ['ID Orden', 'Cliente', 'Asesor', 'Total', 'Fecha', 'Hora'];
+        headers.forEach((header, i) => {
+            doc.text(header, offsetX + colWidths.slice(0, i).reduce((a, b) => a + b, 0), y, {
+                width: colWidths[i],
+                align: 'center',
+            });
+        });
+
+        y += itemSpacing;
+
+        // Dibujar contenido de la tabla
+        doc.font('Helvetica');
+        let totalSum = 0; // Para calcular la sumatoria del total
+
+        ordenes.forEach((orden) => {
+            // Actualizar la sumatoria
+            totalSum += Math.round(orden.total);
+
+            doc.text(orden.id_orden, offsetX, y, { width: colWidths[0], align: 'center' });
+            doc.text(orden.Customer.nombre, offsetX + colWidths[0], y, { width: colWidths[1], align: 'center' });
+            doc.text(orden.User.nombre, offsetX + colWidths[0] + colWidths[1], y, { width: colWidths[2], align: 'center' });
+            doc.text(
+                new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0, // Sin decimales
+                }).format(orden.total),
+                offsetX + colWidths[0] + colWidths[1] + colWidths[2],
+                y,
+                { width: colWidths[3], align: 'center' }
+            );
+            doc.text(
+                orden.createdAt.toLocaleDateString('es-CO'),
+                offsetX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3],
+                y,
+                { width: colWidths[4], align: 'center' }
+            );
+            doc.text(
+                orden.createdAt.toLocaleTimeString('es-CO'),
+                offsetX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + colWidths[4],
+                y,
+                { width: colWidths[5], align: 'center' }
+            );
+            y += itemSpacing;
+
+            // Si la posición actual excede la página, añade una nueva página
+            if (y > doc.page.height - 50) {
+                doc.addPage();
+                addWatermark(); // Marca de agua para la nueva página
+                y = tableTop;
+            }
+        });
+
+        // Mostrar la sumatoria al final de la tabla
+        y += itemSpacing;
+        doc.font('Helvetica-Bold').text('Total General:', offsetX + colWidths[0] + colWidths[1] + colWidths[2], y, {
+            width: colWidths[3],
+            align: 'center',
+        });
+        doc.font('Helvetica').text(
+            new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0, // Sin decimales
+            }).format(totalSum),
+            offsetX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3],
+            y,
+            { width: colWidths[3], align: 'center' }
+        );
+
+        // Agregar marca de agua a la primera página
+        addWatermark();
+
+        // Finalizar el documento PDF
+        doc.end();
+
+        writeStream.on('finish', () => {
+            res.download(filePath, (err) => {
+                if (err) {
+                    console.error('Error al descargar el archivo:', err);
+                    res.status(500).json({ message: 'Error al descargar el archivo PDF', error: err });
+                }
+            });
+        });
+
+        writeStream.on('error', (err) => {
+            console.error('Error al escribir el archivo PDF:', err);
+            res.status(500).json({ message: 'Error al crear el archivo PDF', error: err });
+        });
+    } catch (error) {
+        console.error('Error al exportar las órdenes:', error);
+        res.status(500).json({ message: 'Error al exportar las órdenes', error });
+    }
+};

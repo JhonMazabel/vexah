@@ -7,7 +7,8 @@ import {
     actualizarOrden,
     eliminarOrden,
     cambiarEstadoOrden,
-    imprimirOrden
+    imprimirOrden,
+    exportarOrdenesPDF
 } from '../controllers/orderController.js';
 
 import validateFields from '../middlewares/validateFields.js';
@@ -30,6 +31,8 @@ router.post(
 
 // Ruta para listar todas las órdenes
 router.get('/', authenticateToken, listarOrdenes);
+
+router.get('/exportar-pdf', authenticateToken, authorizeRole('ADMINISTRADOR'), exportarOrdenesPDF);
 
 // Ruta para obtener una orden por ID
 router.get('/:id', authenticateToken, obtenerOrdenPorId);
