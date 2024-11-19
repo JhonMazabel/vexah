@@ -15,7 +15,7 @@ const RegisterScreen = () => {
 
   return (
     <div className="register-screen container">
-      <h2>Registrarse</h2>
+      <h2>Registrar Asesor Comercial</h2>
       <form onSubmit={handleRegister}>
         <div className="mb-3">
           <label className="form-label">Nombre</label>
