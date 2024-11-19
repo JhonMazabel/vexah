@@ -1,4 +1,4 @@
-import { Order, OrderDetail, Product, Customer, InventoryTransaction } from '../models/index.js';
+import { Order, OrderDetail, Product, Customer, InventoryTransaction, User } from '../models/index.js';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
@@ -64,7 +64,7 @@ export const crearOrden = async (req, res) => {
 // Listar todas las órdenes, incluyendo las eliminadas lógicamente
 export const listarOrdenes = async (req, res) => {
     try {
-        const ordenes = await Order.findAll({ paranoid: false, include: [Customer, OrderDetail] });
+        const ordenes = await Order.findAll({ paranoid: false, include: [Customer, OrderDetail, User], order: [["id_orden", "desc"]] });
         res.status(200).json(ordenes);
     } catch (error) {
         res.status(500).json({ message: 'Error al listar las órdenes', error });
@@ -75,7 +75,7 @@ export const listarOrdenes = async (req, res) => {
 export const obtenerOrdenPorId = async (req, res) => {
     const { id } = req.params;
     try {
-        const orden = await Order.findByPk(id, { paranoid: false, include: [Customer, OrderDetail] });
+        const orden = await Order.findByPk(id, { paranoid: false, include: [Customer, OrderDetail, User], order: [["id_orden", "desc"]] });
         if (!orden) {
             return res.status(404).json({ message: 'Orden no encontrada' });
         }

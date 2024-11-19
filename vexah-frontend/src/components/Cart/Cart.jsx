@@ -162,6 +162,11 @@ const Cart = ({ cart, setCart, setRefresh }) => {
     });
   };
 
+  // Calcular el total del carrito
+  const calculateTotal = () => {
+    return cart.reduce((acc, item) => acc + item.precio * item.quantity, 0);
+  };
+
   return (
     <div className="cart-section">
       <h3>Carrito de Compras</h3>
@@ -193,6 +198,10 @@ const Cart = ({ cart, setCart, setRefresh }) => {
 
       {cart.length > 0 && (
         <>
+          <div className="cart-total">
+            <h4>Total: {formatPrice(calculateTotal())}</h4>
+          </div>
+
           <div className="customer-section">
             <h4>Datos del Cliente</h4>
             <div className="customer-form">

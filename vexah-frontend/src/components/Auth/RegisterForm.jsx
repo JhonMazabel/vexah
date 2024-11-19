@@ -6,7 +6,6 @@ const RegisterForm = () => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [roleId, setRoleId] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -16,8 +15,7 @@ const RegisterForm = () => {
       const data = await registerUser({
         nombre,
         correo: email,
-        clave: password,
-        rol_id: parseInt(roleId),
+        clave: password
       });
       setMessage('Registro exitoso');
       console.log(data);

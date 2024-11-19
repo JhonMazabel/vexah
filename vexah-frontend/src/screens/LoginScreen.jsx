@@ -21,6 +21,8 @@ const LoginScreen = () => {
     navigate('/login'); // Redirigir al login
   };
 
+  console.log({user});
+
   const renderContent = () => {
     switch (view) {
       case 'login':
@@ -87,7 +89,7 @@ const LoginScreen = () => {
 
       {/* Sección derecha */}
       <div className="right-section">
-        <h2>Bienvenido{user ? `, ${user.nombre}` : ''}</h2>
+        <h2>Bienvenido{user ? `, ${user.rol}` : ''}</h2>
         {renderContent()}
       </div>
     </div>
