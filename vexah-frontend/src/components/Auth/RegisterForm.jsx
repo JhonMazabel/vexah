@@ -28,7 +28,7 @@ const RegisterForm = () => {
 
   return (
     <div className="register-form container">
-      <h2>Registrarse</h2>
+      <h2>Registrar Asesor Comercial</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Nombre</label>
@@ -60,17 +60,8 @@ const RegisterForm = () => {
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Rol ID</label>
-          <input
-            type="number"
-            className="form-control"
-            value={roleId}
-            onChange={(e) => setRoleId(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Registrarse</button>
+
+        <button type="submit" className="btn btn-primary">Registrar</button>
         {error && <p className="text-danger">{error}</p>}
         {message && <p className="text-success">{message}</p>}
       </form>

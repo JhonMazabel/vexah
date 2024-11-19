@@ -1,4 +1,3 @@
-// src/services/orderApi.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:3000/api/orders'; // Cambia esto según tu configuración de backend
@@ -15,6 +14,21 @@ export const createOrder = async (orderData) => {
         return response.data;
     } catch (error) {
         throw error.response?.data || 'Error al crear la orden';
+    }
+};
+
+// Función para listar órdenes
+export const getOrders = async () => {
+    try {
+        const token = localStorage.getItem('token'); // Obtén el token de localStorage
+        const response = await axios.get(API_URL, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Incluye el token en los encabezados
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || 'Error al listar las órdenes';
     }
 };
 
