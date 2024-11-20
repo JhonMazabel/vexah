@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getOrders, exportOrdersPDF } from '../services/orderApi';
+import { getOrders, exportOrdersPDF, downloadOrderPDF } from '../services/orderApi';
 import { AuthContext } from '../context/AuthContext';
 import '../scss/OrdersScreen.scss';
 import banner from '../assets/banner.png';
@@ -36,6 +36,14 @@ const OrderScreen = () => {
     }).format(amount);
   };
 
+  const handleDownloadPDF = async (orderId) => {
+    try {
+      await downloadOrderPDF(orderId);
+    } catch (err) {
+      console.error('Error al descargar el PDF:', err);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="orders-screen">
@@ -59,10 +67,9 @@ const OrderScreen = () => {
 
       <div className="actions">
         <button className="export-pdf-button" onClick={exportOrdersPDF}>
-          Exportar PDF
+          Exportar PDF General
         </button>
       </div>
-
 
       <main className="main-content">
         <div className="orders-container">
@@ -86,6 +93,7 @@ const OrderScreen = () => {
                     <th>Total</th>
                     <th>Fecha</th>
                     <th>Hora</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -97,6 +105,14 @@ const OrderScreen = () => {
                       <td className="total">{formatCurrency(order.total)}</td>
                       <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td>{new Date(order.createdAt).toLocaleTimeString()}</td>
+                      <td>
+                        <button
+                          className="btn btn-download"
+                          onClick={() => handleDownloadPDF(order.id_orden)}
+                        >
+                          Descargar PDF
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
