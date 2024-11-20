@@ -47,7 +47,8 @@ export const listarTransaccionesInventario = async (req, res) => {
             include: [
                 { model: Product, attributes: ['nombre_producto'] },
                 { model: User, attributes: ['nombre'] }
-            ]
+            ],
+            order: [["createdAt", "DESC"]]
         });
         res.status(200).json(transacciones);
     } catch (error) {
@@ -87,7 +88,8 @@ export const listarTransaccionesPorProducto = async (req, res) => {
             include: [
                 { model: Product, attributes: ['nombre_producto'] },
                 { model: User, attributes: ['nombre'] }
-            ]
+            ],
+            order: [["createdAt", "DESC"]]
         });
 
         if (transacciones.length === 0) {

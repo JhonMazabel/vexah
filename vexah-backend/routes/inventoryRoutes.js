@@ -28,10 +28,10 @@ router.post(
 // Ruta para listar todas las transacciones de inventario
 router.get('/', authenticateToken, listarTransaccionesInventario);
 
-// Ruta para obtener una transacción de inventario por ID
-router.get('/:id', authenticateToken, obtenerTransaccionPorId);
-
 // Ruta para listar todas las transacciones de un producto específico por su ID
 router.get('/producto/:id_producto', authenticateToken, listarTransaccionesPorProducto);
+
+// Ruta para obtener una transacción de inventario por ID
+router.get('/:id', authenticateToken, obtenerTransaccionPorId);
 
 export default router;

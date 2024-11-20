@@ -143,6 +143,12 @@ const ProductsScreen = () => {
                   <button onClick={() => handleDeleteProduct(product.id_producto)} className="btn btn-danger">
                     Eliminar
                   </button>
+                  <button
+                    onClick={() => navigate(`/transactions/${product.id_producto}`)}
+                    className="btn btn-secondary"
+                  >
+                    Transacciones
+                  </button>
                 </div>
               )}
             </div>
@@ -155,96 +161,96 @@ const ProductsScreen = () => {
 
       {/* Modal para Crear/Editar Productos */}
       <Modal
-  isOpen={isModalOpen}
-  onRequestClose={() => setIsModalOpen(false)}
-  contentLabel="Formulario de Producto"
-  className="modal"
-  ariaHideApp={false}
->
-  <div className="modal-content">
-    <h2>{selectedProduct ? 'Editar Producto' : 'Agregar Producto'}</h2>
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target); // FormData para manejar archivos
-        const productData = {
-          id_producto: selectedProduct?.id_producto ?? null,
-          nombre_producto: formData.get('nombre_producto'),
-          descripcion: formData.get('descripcion'),
-          precio: parseFloat(formData.get('precio')),
-          stock: parseInt(formData.get('stock'), 10),
-          imagen_portada: formData.get('imagen_portada'), // Campo de imagen
-        };
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Formulario de Producto"
+        className="modal"
+        ariaHideApp={false}
+      >
+        <div className="modal-content">
+          <h2>{selectedProduct ? 'Editar Producto' : 'Agregar Producto'}</h2>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target); // FormData para manejar archivos
+              const productData = {
+                id_producto: selectedProduct?.id_producto ?? null,
+                nombre_producto: formData.get('nombre_producto'),
+                descripcion: formData.get('descripcion'),
+                precio: parseFloat(formData.get('precio')),
+                stock: parseInt(formData.get('stock'), 10),
+                imagen_portada: formData.get('imagen_portada'), // Campo de imagen
+              };
 
-        if (selectedProduct) {
-          await handleUpdateProduct(selectedProduct.id_producto, productData);
-        } else {
-          await handleCreateProduct(productData);
-        }
-      }}
-    >
-      <div>
-        <label htmlFor="nombre_producto">Nombre del producto</label>
-        <input
-          id="nombre_producto"
-          name="nombre_producto"
-          defaultValue={selectedProduct?.nombre_producto || ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="descripcion">Descripción</label>
-        <textarea
-          id="descripcion"
-          name="descripcion"
-          defaultValue={selectedProduct?.descripcion || ''}
-        />
-      </div>
-      <div>
-        <label htmlFor="precio">Precio</label>
-        <input
-          id="precio"
-          name="precio"
-          type="number"
-          step="0.01"
-          defaultValue={selectedProduct?.precio || ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="stock">Stock</label>
-        <input
-          id="stock"
-          name="stock"
-          type="number"
-          defaultValue={selectedProduct?.stock || ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="imagen_portada">Imagen del producto</label>
-        <input
-          id="imagen_portada"
-          name="imagen_portada"
-          type="file"
-          accept="image/*"
-        />
-      </div>
-      <div className="modal-actions">
-        <button type="submit" className="btn btn-primary">
-          {selectedProduct ? 'Actualizar' : 'Crear'}
-        </button>
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(false)}
-          className="btn btn-secondary"
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
-  </div>
-</Modal>
+              if (selectedProduct) {
+                await handleUpdateProduct(selectedProduct.id_producto, productData);
+              } else {
+                await handleCreateProduct(productData);
+              }
+            }}
+          >
+            <div>
+              <label htmlFor="nombre_producto">Nombre del producto</label>
+              <input
+                id="nombre_producto"
+                name="nombre_producto"
+                defaultValue={selectedProduct?.nombre_producto || ''}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="descripcion">Descripción</label>
+              <textarea
+                id="descripcion"
+                name="descripcion"
+                defaultValue={selectedProduct?.descripcion || ''}
+              />
+            </div>
+            <div>
+              <label htmlFor="precio">Precio</label>
+              <input
+                id="precio"
+                name="precio"
+                type="number"
+                step="0.01"
+                defaultValue={selectedProduct?.precio || ''}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="stock">Stock</label>
+              <input
+                id="stock"
+                name="stock"
+                type="number"
+                defaultValue={selectedProduct?.stock || ''}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="imagen_portada">Imagen del producto</label>
+              <input
+                id="imagen_portada"
+                name="imagen_portada"
+                type="file"
+                accept="image/*"
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="btn btn-primary">
+                {selectedProduct ? 'Actualizar' : 'Crear'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="btn btn-secondary"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
 
 
     </div>

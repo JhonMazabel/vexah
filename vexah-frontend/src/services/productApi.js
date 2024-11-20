@@ -20,6 +20,7 @@ export const getActiveProducts = async () => {
 // Función para crear un producto
 export const createProduct = async (productData, token) => {
   try {
+    const token = localStorage.getItem('token'); // Obtén el token de localStorage
     const response = await axios.post(API_URL, productData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,6 +36,7 @@ export const createProduct = async (productData, token) => {
 // Función para eliminar un producto
 export const deleteProduct = async (id, token) => {
   try {
+    const token = localStorage.getItem('token'); // Obtén el token de localStorage
     const response = await axios.delete(`${API_URL}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -49,6 +51,7 @@ export const deleteProduct = async (id, token) => {
 // Función para actualizar un producto
 export const updateProduct = async (productId, productData, token) => {
   try {
+    const token = localStorage.getItem('token'); // Obtén el token de localStorage
     const response = await axios.put(`${API_URL}/${productId}`, productData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -61,4 +64,12 @@ export const updateProduct = async (productId, productData, token) => {
   }
 };
 
-
+export const getProductById = async (id_producto) => {
+  const token = localStorage.getItem('token'); // Obtén el token de localStorage
+  const response = await axios.get(`${API_URL}/${id_producto}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
