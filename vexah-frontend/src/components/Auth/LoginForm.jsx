@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { loginUser } from '../../services/authApi';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Asegúrate de usar el named export
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -12,9 +13,20 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser({ correo: email, clave: password }); // Asegúrate de que el payload coincida con el backend
+      const data = await loginUser({ correo: email, clave: password }); // Inicia sesión
       localStorage.setItem('token', data.token); // Guarda el token en localStorage
-      navigate('/products'); // Redirige a la pantalla de productos
+
+      // Decodifica el token para obtener el rol del usuario
+      const decoded = jwtDecode(data.token);
+
+      // Redirige según el rol del usuario
+      if (decoded.rol === 'ADMINISTRADOR') {
+        navigate('/dashboard'); // Página específica para administradores
+      } else if (decoded.rol === 'ASESOR_VENTAS') {
+        navigate('/products'); // Página específica para asesores de ventas
+      } else {
+        navigate('/'); // Página por defecto
+      }
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión');
     }

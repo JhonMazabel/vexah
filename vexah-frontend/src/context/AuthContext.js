@@ -1,43 +1,34 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
-
+import React, { createContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode"; // Named export
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Almacena los datos decodificados del usuario
-  const [token, setToken] = useState(localStorage.getItem('token')); // Almacena el token de autenticación
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
-  // Decodificar el token y establecer el usuario al cargar el contexto
   useEffect(() => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setUser(decoded); // Almacena los datos del usuario decodificados
+        setUser(decoded);
       } catch (error) {
-        console.error('Error al decodificar el token:', error);
+        console.error("Error al decodificar el token:", error);
       }
     }
   }, [token]);
 
-  // Función para iniciar sesión
   const login = (newToken) => {
-    localStorage.setItem('token', newToken); // Guarda el token en localStorage
+    localStorage.setItem("token", newToken);
     setToken(newToken);
-    
-    try {
-      const decoded = jwtDecode(newToken);
-      setUser(decoded); // Almacena los datos del usuario decodificados
-    } catch (error) {
-      console.error('Error al decodificar el token después del login:', error);
-    }
+    const decoded = jwtDecode(newToken);
+    setUser(decoded);
   };
 
-  // Función para cerrar sesión
   const logout = () => {
-    localStorage.removeItem('token'); // Elimina el token de localStorage
+    localStorage.removeItem("token");
     setToken(null);
-    setUser(null); // Limpia los datos del usuario
+    setUser(null);
   };
 
   return (

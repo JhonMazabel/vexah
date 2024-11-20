@@ -1,55 +1,64 @@
 // src/screens/LoginScreen.jsx
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext"; // Importar el contexto de autenticación
+import { useNavigate } from "react-router-dom";
 
-import LoginForm from '../components/Auth/LoginForm';
-import RegisterForm from '../components/Auth/RegisterForm';
-import RegisterClientForm from '../components/Auth/RegisterCliente';
-import { AuthContext } from '../context/AuthContext'; // Importar el contexto de autenticación
+import { FaArrowLeft } from "react-icons/fa";
 
-import logo from '../assets/logo.png';
-import '../scss/LoginScreen.scss';
+import LoginForm from "../components/Auth/LoginForm";
+import RegisterForm from "../components/Auth/RegisterForm";
+import RegisterClientForm from "../components/Auth/RegisterCliente";
+
+import logo from "../assets/logo.png";
+import "../scss/LoginScreen.scss";
 
 const LoginScreen = () => {
   const navigate = useNavigate();
-  const [view, setView] = useState('options'); // Estado para controlar qué formulario mostrar
-  const { user, logout } = useContext(AuthContext); // Obtener el usuario autenticado y la función de cerrar sesión del contexto
+  const [view, setView] = useState("options"); // Estado para controlar qué formulario mostrar
+  const { user, logout, token, login } = useContext(AuthContext); // Obtener el usuario autenticado y la función de cerrar sesión del contexto
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken && !user) {
+      login(storedToken); // Decodifica el token y establece el usuario
+    }
+  }, [user, login]);  
 
   const handleLogout = () => {
     logout(); // Llamar a la función de cerrar sesión
-    navigate('/login'); // Redirigir al login
+    navigate("/"); // Redirigir al login
   };
 
-  console.log({user});
+  console.log({ user });
 
   const renderContent = () => {
     switch (view) {
-      case 'login':
+      case "login":
         return (
           <div className="form-container">
-            <button className="back-button" onClick={() => setView('options')}>
+            <button className="back-button" onClick={() => setView("options")}>
               <FaArrowLeft /> Volver
             </button>
             <LoginForm /> {/* Renderiza el formulario de inicio de sesión */}
           </div>
         );
-      case 'register':
+      case "register":
         return (
           <div className="form-container">
-            <button className="back-button" onClick={() => setView('options')}>
+            <button className="back-button" onClick={() => setView("options")}>
               <FaArrowLeft /> Volver
             </button>
             <RegisterForm /> {/* Renderiza el formulario de registro */}
           </div>
         );
-      case 'registerClient':
+      case "registerClient":
         return (
           <div className="form-container">
-            <button className="back-button" onClick={() => setView('options')}>
+            <button className="back-button" onClick={() => setView("options")}>
               <FaArrowLeft /> Volver
             </button>
-            <RegisterClientForm /> {/* Renderiza el formulario de registro de cliente */}
+            <RegisterClientForm />{" "}
+            {/* Renderiza el formulario de registro de cliente */}
           </div>
         );
       default:
@@ -57,23 +66,41 @@ const LoginScreen = () => {
           <div className="button-group">
             {user ? (
               <>
-                <button className="btn" onClick={handleLogout}>Cerrar Sesión</button>
-                {user.rol === 'ADMINISTRADOR' && (
-                  <button className="btn" onClick={() => setView('register')}>
-                    Registrar Asesor Comercial
-                  </button>
+                <button className="btn" onClick={handleLogout}>
+                  Cerrar Sesión
+                </button>
+                {user.rol === "ADMINISTRADOR" && (
+                  <>
+                    <button className="btn" onClick={() => setView("register")}>
+                      Registrar Asesor Comercial
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Ir al Dashboard
+                    </button>
+                  </>
                 )}
-                <button className="btn" onClick={() => navigate('/dashboard')}>Ir al Dashboard</button>
-                <button className="btn" onClick={() => setView('registerClient')}>Registrar Cliente</button>
-                <button className="btn" onClick={() => navigate('/products')}>Ver Productos</button>
-                <button className="btn" onClick={() => navigate('/orders')}>Ver Ordenes</button>
+
+                <button
+                  className="btn"
+                  onClick={() => setView("registerClient")}
+                >
+                  Registrar Cliente
+                </button>
+                <button className="btn" onClick={() => navigate("/products")}>
+                  Ver Productos
+                </button>
+                <button className="btn" onClick={() => navigate("/orders")}>
+                  Ver Ordenes
+                </button>
               </>
             ) : (
               <>
-                <button className="btn" onClick={() => setView('login')}>Ingresar</button>
-                <button className="btn" onClick={() => setView('registerClient')}>Registrar Cliente</button>
-                <button className="btn" onClick={() => navigate('/products')}>Ver Productos</button>
-                <button className="btn" onClick={() => navigate('/orders')}>Ver Ordenes</button>
+                <button className="btn" onClick={() => setView("login")}>
+                  Ingresar
+                </button>
               </>
             )}
           </div>
@@ -90,7 +117,7 @@ const LoginScreen = () => {
 
       {/* Sección derecha */}
       <div className="right-section">
-        <h2>Bienvenido{user ? `, ${user.rol}` : ''}</h2>
+        <h2>Bienvenido{user ? `, ${user.rol}` : ""}</h2>
         {renderContent()}
       </div>
     </div>
