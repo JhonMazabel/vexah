@@ -63,6 +63,7 @@ const LoginScreen = () => {
                     Registrar Asesor Comercial
                   </button>
                 )}
+                <button className="btn" onClick={() => navigate('/dashboard')}>Ir al Dashboard</button>
                 <button className="btn" onClick={() => setView('registerClient')}>Registrar Cliente</button>
                 <button className="btn" onClick={() => navigate('/products')}>Ver Productos</button>
                 <button className="btn" onClick={() => navigate('/orders')}>Ver Ordenes</button>

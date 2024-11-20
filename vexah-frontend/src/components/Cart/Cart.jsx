@@ -169,7 +169,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
 
   return (
     <div className="cart-section">
-      <h3>Carrito de Compras</h3>
+      <h3>Gestión de Ordenes</h3>
       {cart.length === 0 ? (
         <p>El carrito está vacío</p>
       ) : (
@@ -204,6 +204,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
 
           <div className="customer-section">
             <h4>Datos del Cliente</h4>
+
             <div className="customer-form">
               <input
                 type="text"
@@ -215,12 +216,14 @@ const Cart = ({ cart, setCart, setRefresh }) => {
                 Buscar Cliente
               </button>
             </div>
+
             {error && <p className="error-message">{error}</p>}
+            <p> - Los campos marcados con (*) son obligatorios</p>
             <div className="customer-details">
               <input
                 type="text"
                 name="nombre"
-                placeholder="Nombre"
+                placeholder="Nombre(*)"
                 value={cliente.nombre}
                 onChange={handleChangeCliente}
                 required
@@ -228,7 +231,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="identificacion"
-                placeholder="Identificación"
+                placeholder="Identificación(*)"
                 value={cliente.identificacion}
                 onChange={handleChangeCliente}
                 required
@@ -236,7 +239,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="correo"
-                placeholder="Correo Electrónico"
+                placeholder="Correo Electrónico(*)"
                 value={cliente.correo}
                 onChange={handleChangeCliente}
                 required
@@ -244,7 +247,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="telefono"
-                placeholder="Teléfono"
+                placeholder="Teléfono(*)"
                 value={cliente.telefono}
                 onChange={handleChangeCliente}
                 required
@@ -252,7 +255,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="direccion"
-                placeholder="Dirección"
+                placeholder="Dirección(*)"
                 value={cliente.direccion}
                 onChange={handleChangeCliente}
                 required
@@ -260,7 +263,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="ciudad"
-                placeholder="Ciudad"
+                placeholder="Ciudad(*)"
                 value={cliente.ciudad}
                 onChange={handleChangeCliente}
                 required
@@ -268,7 +271,7 @@ const Cart = ({ cart, setCart, setRefresh }) => {
               <input
                 type="text"
                 name="estado"
-                placeholder="Estado"
+                placeholder="Estado(*)"
                 value={cliente.estado}
                 onChange={handleChangeCliente}
                 required
