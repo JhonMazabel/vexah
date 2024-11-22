@@ -21,6 +21,8 @@ const ProductsScreen = () => {
   const [refresh, setRefresh] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortAscending, setSortAscending] = useState(true);
 
   // Obtener los productos activos
   useEffect(() => {
@@ -97,6 +99,19 @@ const ProductsScreen = () => {
     }
   };
 
+  // Filtrar y ordenar productos
+  const filteredProducts = products.filter(product =>
+    product.nombre_producto.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    if (sortAscending) {
+      return a.precio - b.precio;
+    } else {
+      return b.precio - a.precio;
+    }
+  });
+
   return (
     <div className="products-screen">
       <div className="header-image">
@@ -106,8 +121,15 @@ const ProductsScreen = () => {
 
       <div className="inventory-section">
         <div className="filter-options">
-          <input type="text" placeholder="Buscar por nombre" />
-          <button>Ordenar por precio</button>
+          <input
+            type="text"
+            placeholder="Buscar por nombre"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button onClick={() => setSortAscending(!sortAscending)}>
+            Ordenar por precio ({sortAscending ? 'Ascendente' : 'Descendente'})
+          </button>
         </div>
 
         {user?.rol === 'ADMINISTRADOR' && (
@@ -126,7 +148,7 @@ const ProductsScreen = () => {
 
         {error && <p className="error">{error}</p>}
         <div className="product-list">
-          {products.map((product) => (
+          {sortedProducts.map((product) => (
             <div key={product.id_producto} className="product-item">
               <ProductCard product={product} addToCart={addToCart} />
               {user?.rol === 'ADMINISTRADOR' && (
@@ -251,8 +273,6 @@ const ProductsScreen = () => {
           </form>
         </div>
       </Modal>
-
-
     </div>
   );
 };

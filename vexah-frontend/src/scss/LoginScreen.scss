@@ -25,8 +25,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    clip-path: polygon(25% 0, 100% 0, 100% 100%, 25% 100%, 0 50%);
-    padding: 20px;
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 10% 100%, 0 50%); // Moved blue section more to the left to prevent overlap with fields
+    padding: 40px; // Increased padding to create more space around the form
 
     h2 {
       margin-bottom: 20px;
@@ -36,7 +36,7 @@
     .form-container,
     .button-group {
       width: 100%;
-      max-width: 400px;
+      max-width: 600px; // Increased max-width to accommodate two columns
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -78,28 +78,40 @@
       }
 
       form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); // Ensure equal-width columns
+        align-items: center; // Align fields in the middle of their respective grid areas
+        column-gap: 30px; // Increased column gap for better spacing
+        row-gap: 20px; // Increased row gap for better alignment
         width: 100%;
 
-        .form-control {
-          padding: 10px;
-          font-size: 1rem;
-          border: 1px solid #cccccc; // Color del borde para mayor visibilidad
-          border-radius: 5px;
-          background-color: #f8f9fa; // Fondo gris claro para contraste
-          color: #333333; // Color de texto oscuro para legibilidad
-        }
+        .mb-3 {
+          display: flex;
+          flex-direction: column;
 
-        .form-control:focus {
-          outline: none;
-          border-color: #4A4A9C; // Color de borde al enfocarse
-          box-shadow: 0 0 5px rgba(74, 74, 156, 0.5); // Sombra para resaltar el campo
+          label {
+            margin-bottom: 5px;
+            font-weight: bold;
+          }
+
+          .form-control {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #cccccc; // Color del borde para mayor visibilidad
+            border-radius: 5px;
+            background-color: #f8f9fa; // Fondo gris claro para contraste
+            color: #333333; // Color de texto oscuro para legibilidad
+          }
+
+          .form-control:focus {
+            outline: none;
+            border-color: #4A4A9C; // Color de borde al enfocarse
+            box-shadow: 0 0 5px rgba(74, 74, 156, 0.5); // Sombra para resaltar el campo
+          }
         }
 
         .btn-primary {
-          width: 100%;
+          grid-column: span 2;
           background-color: #ffffff;
           color: #4A4A9C;
           border: 1px solid #4A4A9C;
@@ -107,6 +119,7 @@
           padding: 10px;
           border-radius: 5px;
           transition: background-color 0.3s ease;
+          margin-top: 20px;
 
           &:hover {
             background-color: #e0e0e0;
