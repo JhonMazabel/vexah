@@ -53,7 +53,7 @@ const RegisterClientForm = () => {
         <div className="mb-3">
           <label className="form-label">Identificación</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             value={identificacion}
             onChange={(e) => setIdentificacion(e.target.value)}
@@ -73,7 +73,7 @@ const RegisterClientForm = () => {
         <div className="mb-3">
           <label className="form-label">Teléfono</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             value={telefono}
             onChange={(e) => setTelefono(e.target.value)}
@@ -101,7 +101,7 @@ const RegisterClientForm = () => {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Estado</label>
+          <label className="form-label">Departamento</label>
           <input
             type="text"
             className="form-control"
@@ -113,7 +113,7 @@ const RegisterClientForm = () => {
         <div className="mb-3">
           <label className="form-label">Código Postal</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             value={codigoPostal}
             onChange={(e) => setCodigoPostal(e.target.value)}
